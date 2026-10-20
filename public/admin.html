@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#101125"><meta name="robots" content="noindex,nofollow">
+  <title>LAS · Gestão de Raspadinhas</title><link rel="stylesheet" href="/style.css">
+  <script defer src="/admin.js"></script>
+</head>
+<body class="admin-body">
+  <header class="topbar">
+    <a class="brand" href="/admin" aria-label="Raspadinha LAS, início"><span class="brand-mark">L<span>✳</span></span><span>LAS <small>RECOMPENSAS</small></span></a>
+    <div class="top-actions"><span class="subtle" id="admin-user">ÁREA PRIVADA</span><button type="button" id="logout" class="btn btn-text hidden">Terminar sessão <span aria-hidden="true">↗</span></button></div>
+  </header>
+  <main>
+    <section id="login-view" class="login-layout">
+      <div class="login-banner"><span class="eyebrow">PROGRAMA DE RECOMPENSAS</span><h1>Mais registos.<br><em>Mais motivos</em><br>para celebrar.</h1><p>Define as probabilidades, partilha convites individuais e acompanha os prémios atribuídos.</p><div class="mini-card"><span>★</span> 100% gerido por ti. Sem ligação automática aos registos LAS.</div></div>
+      <form id="login-form" class="login-card"><div class="tag"><span class="pulse"></span> ACESSO RESERVADO</div><h2>Bem-vindo de volta.</h2><p>Entra no painel de administração.</p><label for="password">Palavra-passe</label><input id="password" type="password" autocomplete="current-password" placeholder="A tua palavra-passe" required><button class="btn btn-primary full" type="submit">Entrar no painel <span>→</span></button><p id="login-feedback" class="feedback" role="alert"></p></form>
+    </section>
+    <section id="dashboard-view" class="dashboard hidden">
+      <div class="dash-hero"><div><span class="eyebrow">PAINEL DE CONTROLO</span><h1>Recompensar faz <em>parte do jogo.</em></h1><p>Cria raspadinhas únicas para os teus colaboradores, ajusta as probabilidades e acompanha cada resultado.</p></div><a class="btn btn-outline hero-export" id="export" href="/api/admin/export.csv">↓ Exportar CSV</a></div>
+      <div class="stat-grid" id="stats">
+        <div class="stat"><span>Convites criados</span><strong id="stat-generated">0</strong><span class="stat-icon">◈</span></div>
+        <div class="stat"><span>Raspadinhas jogadas</span><strong id="stat-played">0</strong><span class="stat-icon">✳</span></div>
+        <div class="stat"><span>Valor atribuído</span><strong id="stat-spent">0 €</strong><span class="stat-icon">€</span></div>
+        <div class="stat"><span>Por entregar</span><strong id="stat-pending-value">0 €</strong><span class="stat-icon">↗</span></div>
+      </div>
+      <div class="main-grid">
+        <div class="left-column">
+          <section class="panel" id="new-invite-panel"><div class="panel-heading"><div><span class="eyebrow">01 / CONVITE</span><h2 id="form-title">Criar raspadinha</h2></div><span class="symbol">✳</span></div>
+            <form id="invite-form">
+              <div class="input-group"><label for="staff-name">Nome do colaborador <span>*</span></label><input id="staff-name" maxlength="90" required minlength="2" placeholder="Ex.: Ana Ferreira"></div>
+              <div class="form-row"><div class="input-group"><label for="las-count">Registos LAS atingidos</label><input id="las-count" type="number" min="0" max="10000000" value="0"></div><div class="input-group"><label for="expiry">Válido até (opcional)</label><input id="expiry" type="date"></div></div>
+              <div class="input-group"><label for="notes">Notas internas (opcional)</label><input id="notes" maxlength="300" placeholder="Ex.: Objetivo semanal atingido"></div>
+              <div class="separator"></div>
+              <div class="odds-heading"><div><h3>Probabilidade por prémio</h3><p>Configura as hipóteses específicas deste convite.</p></div><span class="total" id="invite-total">100%</span></div>
+              <div class="odds-grid invite-odds">
+                <label class="odd-item"><span class="prize-label">Cartão Dá <b>5 €</b></span><span class="percent-input"><input data-odds="0" type="number" step="0.01" min="0" max="100" required aria-label="Percentagem prémio 5 euros"><span>%</span></span></label>
+                <label class="odd-item"><span class="prize-label">Cartão Dá <b>10 €</b></span><span class="percent-input"><input data-odds="1" type="number" step="0.01" min="0" max="100" required aria-label="Percentagem prémio 10 euros"><span>%</span></span></label>
+                <label class="odd-item"><span class="prize-label">Cartão Dá <b>20 €</b></span><span class="percent-input"><input data-odds="2" type="number" step="0.01" min="0" max="100" required aria-label="Percentagem prémio 20 euros"><span>%</span></span></label>
+                <label class="odd-item gold"><span class="prize-label">Cartão Dá <b>50 €</b></span><span class="percent-input"><input data-odds="3" type="number" step="0.01" min="0" max="100" required aria-label="Percentagem prémio 50 euros"><span>%</span></span></label>
+              </div>
+              <p class="cost-hint" id="expected-cost">Valor médio esperado por convite: —</p>
+              <div class="form-footer"><button type="button" class="btn btn-text hidden" id="cancel-edit">Cancelar edição</button><button type="submit" class="btn btn-primary full" id="submit-invite">Gerar link único <span>↗</span></button></div>
+              <p class="feedback" id="invite-feedback" role="status"></p>
+            </form>
+          </section>
+          <section class="panel compact-panel"><div class="panel-heading"><div><span class="eyebrow">02 / MODELO</span><h2>Probabilidades predefinidas</h2></div></div><p class="muted">Estes valores são usados ao criar novos convites. Não alteram os já criados.</p>
+            <form id="defaults-form"><div class="default-grid">
+              <label>5 €<span class="percent-input"><input data-default="0" type="number" step="0.01" min="0" max="100" required><span>%</span></span></label>
+              <label>10 €<span class="percent-input"><input data-default="1" type="number" step="0.01" min="0" max="100" required><span>%</span></span></label>
+              <label>20 €<span class="percent-input"><input data-default="2" type="number" step="0.01" min="0" max="100" required><span>%</span></span></label>
+              <label>50 €<span class="percent-input"><input data-default="3" type="number" step="0.01" min="0" max="100" required><span>%</span></span></label>
+            </div><div class="row-between"><span class="small muted" id="defaults-total">Total: 100%</span><button type="submit" class="btn btn-outline">Guardar modelo</button></div><p class="feedback" id="defaults-feedback" role="status"></p></form>
+          </section>
+        </div>
+        <section class="panel list-panel"><div class="panel-heading"><div><span class="eyebrow">03 / HISTÓRICO</span><h2>Convites e resultados</h2></div><span class="count-pill" id="count-invites">0</span></div><div class="filter-row"><input id="search" type="search" placeholder="Pesquisar colaborador..."><select id="filter" aria-label="Filtrar convites"><option value="all">Todos</option><option value="available">Disponíveis</option><option value="awarded">Premiados</option><option value="expired">Expirados</option><option value="revoked">Anulados</option></select></div><div id="invites" class="invites-list"><div class="empty">Ainda não existem convites.</div></div><p class="list-note">Os prémios são sorteados pelo servidor quando o colaborador termina de raspar. Cada link só atribui um prémio.</p></section>
+      </div>
+    </section>
+  </main>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

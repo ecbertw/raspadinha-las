@@ -1,0 +1,15 @@
+{
+  "name": "raspadinha-las-cloudflare",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Raspadinha LAS PT-PT com Cloudflare Workers e Durable Objects SQLite",
+  "scripts": {
+    "start": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "test": "node --test tests/*.test.js"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}
