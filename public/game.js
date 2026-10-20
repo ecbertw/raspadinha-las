@@ -56,7 +56,7 @@ function win(prize) {
   $('prize-header').textContent='PARABÉNS! GANHASTE';$('prize-value').textContent=`${prize} €`;
   $('prize-footer').textContent='CARTÃO DÁ';
   $('progress-bar').style.width='100%';$('progress-text').textContent='Raspadinha concluída';
-  area.classList.add('won');message(`🎉 Parabéns! O teu prémio é um Cartão Dá de ${prize} €. Contacta a organização para a entrega.`);
+  area.classList.add('won');message(`🎉 Parabéns! O teu prémio é um Cartão Dá de ${prize} €. Em breve, passarei pela tua loja para te entregar o prémio!`);
   for(let i=0;i<18;i++){const x=document.createElement('i');x.className='confetti';area.appendChild(x);}
 }
 canvas.addEventListener('pointerdown',e=>{if(!active||busy||revealed)return;canvas.setPointerCapture(e.pointerId);erase.last=null;erase(e);});
