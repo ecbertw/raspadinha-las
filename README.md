@@ -12,7 +12,7 @@ Jogo de raspadinhas digitais para recompensar colaboradores por objetivos de reg
 - Geras um **link único** para cada colaborador e envias tu mesmo.
 - O participante raspa no telemóvel. O resultado é sorteado no **servidor**.
 - O mesmo link nunca gera um segundo prémio; reabrir mostra o resultado anterior.
-- Painel privado com convites, LAS registados manualmente, resultados, edição/anulação, entrega dos cartões e exportação CSV.
+- Painel privado com convites, LAS registados manualmente, resultados, edição/anulação, **eliminação individual de qualquer raspadinha** (mesmo já raspada/entregue), entrega dos cartões e exportação CSV.
 - A aplicação **não consulta os sistemas LAS** nem emite cartões automaticamente.
 
 ## Publicar na Cloudflare sem pagar alojamento
@@ -41,6 +41,10 @@ A Cloudflare publica automaticamente alterações posteriores à branch main se 
 - **Estado do servidor:** `/health`
 
 No painel, preenche o nome, o número de registos LAS, a validade opcional e as probabilidades. Gera e copia o link. Após a participação, o valor fica no histórico até confirmares a entrega do cartão.
+
+### Eliminar um registo
+
+Na lista **Convites e resultados**, cada raspadinha tem um botão vermelho **Apagar**, mesmo quando já foi utilizada, expirada, anulada ou quando o prémio foi entregue. A aplicação pede confirmação. Depois de apagares, o registo desaparece da base de dados, o link fica inválido e as estatísticas e os valores atribuídos são recalculados sem esse registo. **A operação não pode ser anulada**: exporta o CSV primeiro se precisares de preservar comprovativos para controlo interno, fiscal ou de entregas.
 
 Um link é um **convite de portador**: qualquer pessoa que tenha o link pode usá-lo antes do seu destinatário. Partilha-o de forma privada. Se for necessário garantir a identidade do colaborador, adiciona autenticação/PIN antes de usar prémios reais.
 

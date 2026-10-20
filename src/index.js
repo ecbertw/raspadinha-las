@@ -238,6 +238,14 @@ export class RaffleStore extends DurableObject {
           a.name,a.las,a.notes,JSON.stringify(a.weights),a.expires,row.id);
         return json(200,{invite:await this.toAdmin(this.getOne('SELECT * FROM invites WHERE id=?',row.id),url.origin)});
       }
+      // A eliminacao aplica-se a todos os estados, incluindo premios revelados e entregues.
+      // O token desaparece com o registo e deixa de poder ser utilizado.
+      if (method === 'DELETE' && edit) {
+        requireOrigin(req); await this.admin(req,true);
+        const deleted=this.sql.exec('DELETE FROM invites WHERE id=?',Number(edit[1]));
+        if (!deleted.rowsWritten) fail(404,'Raspadinha não encontrada ou já apagada.');
+        return json(200,{ok:true});
+      }
       const action=path.match(/^\/api\/admin\/invites\/(\d+)\/(revoke|deliver)$/);
       if (method === 'POST' && action) {
         requireOrigin(req); await this.admin(req,true);

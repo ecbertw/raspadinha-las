@@ -76,7 +76,17 @@ function renderInvites() {
       if(!confirm(`Confirmas a entrega do Cartão Dá de ${r.prize} € a ${r.name}?`))return;
       try {await request(`/api/admin/invites/${r.id}/deliver`,{method:'POST'});toast('Entrega registada.');await refresh();}catch(e){toast(e.message);}
     }));
-    if(actions.childElementCount)item.append(actions);
+    actions.append(makeButton('Apagar','btn-danger',async()=>{
+      const award=r.status==='awarded'?` O prémio de ${r.prize} € também deixará de constar do histórico.`:'';
+      if(!confirm(`Apagar definitivamente a raspadinha de ${r.name} (n.º ${r.id})?\n\nEsta ação é irreversível. O link deixará de funcionar, o registo será eliminado e os totais serão recalculados.${award}`))return;
+      try {
+        await request(`/api/admin/invites/${r.id}`,{method:'DELETE'});
+        if(editingId===r.id)resetInvite();
+        toast('Raspadinha apagada definitivamente.');
+        await refresh();
+      }catch(e){toast(e.message);}
+    }));
+    item.append(actions);
     place.append(item);
   }
 }

@@ -86,5 +86,39 @@ test('login, convite, raspagem única, confirmação de entrega e revogação',a
   assert.equal(response.status,410);
   response=await store.fetch(req('GET','/api/admin/export.csv',null,auth));
   assert.ok((await response.text()).includes('Ana Ferreira'));
+  // Apagar exige acesso de administrador e protecao CSRF.
+  response=await store.fetch(req('DELETE',`/api/admin/invites/${info.id}`));
+  assert.equal(response.status,401);
+  response=await store.fetch(req('DELETE',`/api/admin/invites/${info.id}`,null,{Cookie:cookie}));
+  assert.equal(response.status,403);
+  // Raspadinha ja premiada e entregue: o registo e o respetivo link desaparecem.
+  response=await store.fetch(req('DELETE',`/api/admin/invites/${info.id}`,null,auth));
+  assert.equal(response.status,200);
+  response=await store.fetch(req('GET',`/api/game/${token}`));
+  assert.equal(response.status,404);
+  response=await store.fetch(req('POST',`/api/game/${token}/reveal`));
+  assert.equal(response.status,404);
+  // Uma segunda eliminacao devolve erro de nao encontrado.
+  response=await store.fetch(req('DELETE',`/api/admin/invites/${info.id}`,null,auth));
+  assert.equal(response.status,404);
+  // Apagar uma raspadinha previamente anulada.
+  response=await store.fetch(req('DELETE',`/api/admin/invites/${second.id}`,null,auth));
+  assert.equal(response.status,200);
+  // Apagar raspadinha ainda disponivel.
+  response=await store.fetch(req('POST','/api/admin/invites',{...invite,name:'Joana Lopes'},auth));
+  const third=(await response.json()).invite;
+  response=await store.fetch(req('DELETE',`/api/admin/invites/${third.id}`,null,auth));
+  assert.equal(response.status,200);
+  // Expirar um convite e confirmar que tambem pode ser apagado.
+  response=await store.fetch(req('POST','/api/admin/invites',{...invite,name:'Rui Silva'},auth));
+  const fourth=(await response.json()).invite;
+  db.prepare('UPDATE invites SET expires_at=? WHERE id=?').run(Date.now()-1000,fourth.id);
+  response=await store.fetch(req('DELETE',`/api/admin/invites/${fourth.id}`,null,auth));
+  assert.equal(response.status,200);
+  response=await store.fetch(req('GET','/api/admin/dashboard',null,auth));
+  const updated=await response.json();
+  assert.equal(updated.stats.generated,0);
+  assert.equal(updated.stats.played,0);
+  assert.equal(updated.stats.spent,0);
   db.close();
 });
